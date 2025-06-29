@@ -1,0 +1,55 @@
+version: "3"
+services:
+  user-service:
+    build: ./user-service
+    ports:
+      - "3001:3000"
+    # depends_on:
+    #   - mysql
+    environment:
+      DB_HOST: host.docker.internal
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASSWORD: Momen@@010
+      DB_NAME: whatsapp
+      PORT: 3000
+      REDIS_HOST: redis
+      ACCESS_SECRET: abcdefghigk
+      EMAIL_USER: momenelmesady4803@gmail.com
+      EMAIL_PASS: wlvb wyrd rqng evwu
+      REFRESH_SECRET: abcdefghigk
+
+  chat-service:
+    build: ./chat-service
+    ports:
+      - "3002:3000"
+    # depends_on:
+    #   - mysql
+    environment:
+      DB_HOST: host.docker.internal
+      DB_USER: root
+      DB_PASSWORD: Momen@@010
+      DB_NAME: whatsapp
+      PORT: 3000
+
+
+  # mysql:
+  #   image: mysql:8
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: Momen@@010
+  #     MYSQL_DATABASE: whatsapp
+  #   # ports:
+  #   #   - "3306:3306"
+
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+
+  nginx:
+    build: ./nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - user-service
+      - chat-service
