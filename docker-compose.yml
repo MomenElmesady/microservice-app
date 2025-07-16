@@ -13,7 +13,6 @@ services:
       DB_PASSWORD: Momen@@010
       DB_NAME: whatsapp
       PORT: 3000
-      REDIS_HOST: redis
       ACCESS_SECRET: abcdefghigk
       EMAIL_USER: momenelmesady4803@gmail.com
       EMAIL_PASS: wlvb wyrd rqng evwu
@@ -31,6 +30,8 @@ services:
       DB_PASSWORD: Momen@@010
       DB_NAME: whatsapp
       PORT: 3000
+      ACCESS_SECRET: abcdefghigk
+      RABBITMQ_HOST: rabbitmq
 
 
   # mysql:
@@ -41,10 +42,29 @@ services:
   #   # ports:
   #   #   - "3306:3306"
 
-  redis:
-    image: redis
+
+  rabbitmq:
+    image: rabbitmq:3-management
     ports:
-      - "6379:6379"
+      - "5672:5672"     # للـ RabbitMQ broker
+      - "15672:15672"   # للـ UI بتاع RabbitMQ
+  notification-service:
+    build: ./notification-service
+    depends_on:
+      - rabbitmq
+      - user-service  # لو بيحتاج يقرأ fcm_token من قاعدة بيانات user
+    environment:
+      DB_HOST: host.docker.internal
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASSWORD: Momen@@010
+      DB_NAME: whatsapp
+      RABBITMQ_URL: amqp://rabbitmq
+      RABBITMQ_HOST: rabbitmq
+
+    restart: always
+
+  
 
   nginx:
     build: ./nginx

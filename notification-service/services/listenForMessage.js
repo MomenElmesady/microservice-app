@@ -6,6 +6,7 @@ const { connectRabbitMQ } = require("../config/rabbitmq")
 
 // RabbitMQ consumer to listen for new message notifications
 async function listenForNewMessages() {
+  console.log("Starting RabbitMQ consumer for new messages...");
   const connection = await connectRabbitMQ();
   const channel = await connection.createChannel();
 
